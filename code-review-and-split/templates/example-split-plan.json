@@ -1,0 +1,144 @@
+{
+  "source": "apps/backend/src/routes/pc/ticket.js",
+  "output_dir": "apps/backend/src/routes/pc/ticket",
+  "description": "将票根管理路由文件按功能模块拆分",
+  "estimated_complexity": "HIGH",
+  "reason": "文件超过1000行，包含多个独立功能模块",
+  "modules": [
+    {
+      "id": "types",
+      "name": "票根类型管理",
+      "lines": [1, 110],
+      "routes": ["/ticket-types"],
+      "target": "types.js",
+      "description": "票根类型的CRUD操作",
+      "dependencies": ["prisma", "authenticate"],
+      "exports": ["router"]
+    },
+    {
+      "id": "records",
+      "name": "票根记录管理",
+      "lines": [220, 335],
+      "routes": ["/tickets/review", "/tickets/:id/review"],
+      "target": "records.js",
+      "description": "票根上传、审核、查询",
+      "dependencies": ["prisma", "authenticate"],
+      "exports": ["router"]
+    },
+    {
+      "id": "merchants",
+      "name": "商户管理",
+      "lines": [340, 540],
+      "routes": ["/merchants"],
+      "target": "merchants.js",
+      "description": "商户CRUD和状态管理",
+      "dependencies": ["prisma", "authenticate"],
+      "exports": ["router"]
+    },
+    {
+      "id": "statistics",
+      "name": "统计分析",
+      "lines": [546, 704],
+      "routes": ["/tickets/statistics", "/tickets/statistics/trend", "/tickets/statistics/recognition"],
+      "target": "statistics.js",
+      "description": "票根统计、趋势、识别率",
+      "dependencies": ["prisma", "authenticate"],
+      "exports": ["router"]
+    },
+    {
+      "id": "config",
+      "name": "AI识别配置",
+      "lines": [710, 808],
+      "routes": ["/ticket-config/ai-recognition", "/ticket-config/ai-recognition/test"],
+      "target": "config.js",
+      "description": "AI识别配置管理",
+      "dependencies": ["prisma", "authenticate"],
+      "exports": ["router"]
+    },
+    {
+      "id": "discounts",
+      "name": "优惠规则管理",
+      "lines": [816, 1000],
+      "routes": ["/merchants/:id/discount-rules"],
+      "target": "discounts.js",
+      "description": "商户优惠规则CRUD",
+      "dependencies": ["prisma", "authenticate"],
+      "exports": ["router"]
+    }
+  ],
+  "shared_utils": [
+    {
+      "name": "isAdmin",
+      "usage": ["types", "records", "merchants", "statistics", "config", "discounts"],
+      "target": "utils.js"
+    }
+  ],
+  "index_file": {
+    "target": "index.js",
+    "mounts": [
+      { "path": "/ticket-types", "router": "types" },
+      { "path": "/tickets", "router": "records" },
+      { "path": "/merchants", "router": "merchants" },
+      { "path": "/tickets/statistics", "router": "statistics" },
+      { "path": "/ticket-config", "router": "config" }
+    ]
+  },
+  "concurrent_tasks": [
+    {
+      "task_id": "extract-types",
+      "subagent": "coder",
+      "prompt_file": "templates/subagent-task.md",
+      "variables": {
+        "task_id": "extract-types",
+        "source_file": "apps/backend/src/routes/pc/ticket.js",
+        "target_file": "apps/backend/src/routes/pc/ticket/types.js",
+        "start_line": 1,
+        "end_line": 110,
+        "description": "票根类型管理CRUD",
+        "routes": ["GET /ticket-types", "POST /ticket-types", "PUT /ticket-types/:id", "DELETE /ticket-types/:id"]
+      }
+    },
+    {
+      "task_id": "extract-records",
+      "subagent": "coder",
+      "prompt_file": "templates/subagent-task.md",
+      "variables": {
+        "task_id": "extract-records",
+        "source_file": "apps/backend/src/routes/pc/ticket.js",
+        "target_file": "apps/backend/src/routes/pc/ticket/records.js",
+        "start_line": 220,
+        "end_line": 335,
+        "description": "票根记录审核查询",
+        "routes": ["GET /tickets/review", "POST /tickets/:id/review"]
+      }
+    },
+    {
+      "task_id": "extract-merchants",
+      "subagent": "coder",
+      "prompt_file": "templates/subagent-task.md",
+      "variables": {
+        "task_id": "extract-merchants",
+        "source_file": "apps/backend/src/routes/pc/ticket.js",
+        "target_file": "apps/backend/src/routes/pc/ticket/merchants.js",
+        "start_line": 340,
+        "end_line": 540,
+        "description": "商户管理",
+        "routes": ["GET /merchants", "POST /merchants", "PUT /merchants/:id", "DELETE /merchants/:id"]
+      }
+    },
+    {
+      "task_id": "extract-statistics",
+      "subagent": "coder",
+      "prompt_file": "templates/subagent-task.md",
+      "variables": {
+        "task_id": "extract-statistics",
+        "source_file": "apps/backend/src/routes/pc/ticket.js",
+        "target_file": "apps/backend/src/routes/pc/ticket/statistics.js",
+        "start_line": 546,
+        "end_line": 704,
+        "description": "票根统计分析",
+        "routes": ["GET /tickets/statistics", "GET /tickets/statistics/trend", "GET /tickets/statistics/recognition"]
+      }
+    }
+  ]
+}
